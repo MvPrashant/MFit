@@ -1,6 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { ApiContext } from "../Context/ApiContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import CustomCard from "../Components/CustomCard";
+import { Image } from "react-native";
 
 const ExercisesByBodyPart = ({ route }) => {
   const bodyPart = route?.params?.bodypart;
@@ -24,13 +27,54 @@ const ExercisesByBodyPart = ({ route }) => {
   //     getExercises();
   //     setRefresh(false);
   //   };
+
+  const capitalizeFirst = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
   return (
-    <View>
-      <Text>ExercisesByBodyPart</Text>
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Text style={styles.bodyPart}>{capitalizeFirst(bodyPart)}</Text>
+      <ScrollView>
+        {allExercises?.map((set, index) => {
+          return (
+            <CustomCard key={index} cardStyle={styles.cardStyle}>
+              <Image source={{ uri: set.gifUrl }} style={styles.imgStyle} />
+              <View style={styles.details}>
+                <Text style={styles.name}>{set.name.toUpperCase()}</Text>
+                <Text>Equipment :{capitalizeFirst(set.equipment)}</Text>
+                <Text>Target Muscles: {capitalizeFirst(set.target)}</Text>
+              </View>
+            </CustomCard>
+          );
+        })}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export default ExercisesByBodyPart;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  bodyPart: {
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  cardStyle: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  imgStyle: {
+    height: 150,
+    width: 150,
+  },
+  name: {
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  details: {
+    width: "50%",
+    padding: 5,
+  },
+});
